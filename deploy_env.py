@@ -1,7 +1,7 @@
 import argparse
 import os
 def configuration_parameter():
-    parser = argparse.ArgumentParser(description="This tool helps you quickly deploy your environment (Python only).")
+    parser = argparse.ArgumentParser(description="This tool helps you quickly deploy your environment (Python only).The address of the project: https://github.com/aJarOfCode/pyenv_deploy")
     parser.add_argument('-f','--file', type=str, help="Specifies the passed file.")
     parser.add_argument('-dir','--folder',type=str, help="Specifies the passed folder.")
     parser.add_argument('--conda',type=bool,default=False,help="Specifies whether to use the conda command.")
