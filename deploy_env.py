@@ -1,5 +1,15 @@
 import argparse
 import os
+import pkg_resources
+import configparser
+
+def read_config():
+    config=configparser.ConfigParser()
+    config.read('config.ini')
+    return config
+
+def is_model_installed(model_name):
+    return any(dist.key == model_name for dist in pkg_resources.working_set)
 
 def configuration_parameter():
     parser = argparse.ArgumentParser(description="This tool helps you quickly deploy your environment (Python only).")
@@ -9,30 +19,27 @@ def configuration_parameter():
     args = parser.parse_args()
     return args
 
+args = configuration_parameter()
 def open_file(file_name):
-    args = configuration_parameter()
+    config=read_config()
     with open(file_name, 'r', encoding='utf-8') as file:
         data = file.readlines()
     for line in data:
         if "import"in line:
             model_name=line.split(" ")[1]
-            if args.conda:
-                cmd="conda install "+model_name
-            else:
-                cmd="pip install "+model_name
-            print(cmd)
-            os.popen(cmd).read()
-            print("Successfully installed "+model_name)
+            if not is_model_installed(model_name):
+                cmd="pip install "+model_name+" -i "+config.get("mirror","pip_mirror") if not args.conda else "conda install "+model_name+" -c "+config.get("mirror","conda_mirror")
+                print(cmd)
+                os.popen(cmd).read()
+                print("Successfully installed "+model_name)
 
 def open_folder():
-    args = configuration_parameter()
-    folder_dir = args.folder
     try:
-        files=os.listdir(folder_dir)
+        files=os.listdir(args.folder)
         for file in files:
             if file.endswith(".py"):
                 print("Opening "+file)
-                open_file(os.path.join(folder_dir, file))
+                open_file(os.path.join(args.folder, file))
     except:
         print("Sorry,Folder not found.Check that the path is correct.")
 
