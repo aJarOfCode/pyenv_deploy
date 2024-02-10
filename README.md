@@ -34,7 +34,7 @@ Or, if you want to use `conda` command to install libraries, add the `--conda` p
 python deploy_env.py -f requirements.py -dir my_python_project --conda
 ```
 
-
+4. To configure the image source, go to config.ini.
 ## Example
 
 Suppose you have a file named `requirements.py` with the following content:
