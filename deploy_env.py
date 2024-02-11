@@ -26,7 +26,7 @@ def open_file(file_name):
         data = file.readlines()
     for line in data:
         if "import"in line:
-            model_name=line.split(" ")[1]
+            model_name=line.split(" ")[1].split(".")[0]
             if not is_model_installed(model_name):
                 cmd="pip install "+model_name+" -i "+config.get("mirror","pip_mirror") if not args.conda else "conda install "+model_name+" -c "+config.get("mirror","conda_mirror")
                 print(cmd)
