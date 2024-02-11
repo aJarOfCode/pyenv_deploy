@@ -1,15 +1,12 @@
 import argparse
 import os
-import pkg_resources
+import sys
 import configparser
 
 def read_config():
     config=configparser.ConfigParser()
     config.read('config.ini')
     return config
-
-def is_model_installed(model_name):
-    return any(dist.key == model_name for dist in pkg_resources.working_set)
 
 def configuration_parameter():
     parser = argparse.ArgumentParser(description="This tool helps you quickly deploy your environment (Python only).")
@@ -20,28 +17,28 @@ def configuration_parameter():
     return args
 
 args = configuration_parameter()
-def open_file(file_name):
+
+def Use_requirements():
     config=read_config()
-    with open(file_name, 'r', encoding='utf-8') as file:
-        data = file.readlines()
-    for line in data:
-        if "import"in line:
-            model_name=line.split(" ")[1].split(".")[0]
-            if not is_model_installed(model_name):
-                cmd="pip install "+model_name+" -i "+config.get("mirror","pip_mirror") if not args.conda else "conda install "+model_name+" -c "+config.get("mirror","conda_mirror")
-                print(cmd)
-                os.popen(cmd).read()
-                print("Successfully installed "+model_name)
+    if args.conda:
+        os.popen("conda install --file "+dir).read()
+    else:
+        os.popen("pip install -r "+dir).read()
+
+def open_file(file_name):
+    os.popen("pip freeze <"+file_name+"> > requirements.txt")
+    Use_requirements()
 
 def open_folder():
     try:
         files=os.listdir(args.folder)
-        for file in files:
-            if file.endswith(".py"):
-                print("Opening "+file)
-                open_file(os.path.join(args.folder, file))
+        if "requirements.txt" not in files:
+            os.popen("cd "+args.folder).read()
+            os.popen("pip freeze > requirements.txt")
+        Use_requirements()
     except:
         print("Sorry,Folder not found.Check that the path is correct.")
+
 
 def main():
     args = configuration_parameter()
@@ -52,4 +49,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
