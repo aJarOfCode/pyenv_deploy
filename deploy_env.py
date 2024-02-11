@@ -21,9 +21,9 @@ args = configuration_parameter()
 def Use_requirements():
     config=read_config()
     if args.conda:
-        os.popen("conda install --file "+dir).read()
+        os.popen("conda install --file "+args.folder).read()
     else:
-        os.popen("pip install -r "+dir).read()
+        os.popen("pip install -r "+args.folder).read()
 
 def open_file(file_name):
     os.popen("pip freeze <"+file_name+"> > requirements.txt")
